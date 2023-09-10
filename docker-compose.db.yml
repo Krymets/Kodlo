@@ -6,7 +6,7 @@ services:
     container_name: db
     restart: always
     volumes:
-      # - ./configs/postgres:/docker-entrypoint-initdb.d
+      - ./configs/postgres:/docker-entrypoint-initdb.d
       -  db_data:/var/lib/postgresql/data
 
     ports:
