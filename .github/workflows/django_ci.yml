@@ -15,7 +15,7 @@ env:
   PG_USER: ${{ vars.POSTGRES_USER }}
   PG_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_DB: ${{ vars.POSTGRES_DB }}
-  EMAIL_BACKEND: ""
+  EMAIL_BACKEND: "django.core.mail.backends.smtp.EmailBackend"
   EMAIL_HOST: ""
   EMAIL_PORT: ""
   EMAIL_USE_TLS: ""
@@ -33,7 +33,7 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_DB: db
+          POSTGRES_DB: ${{ vars.DEV_DB }}
           POSTGRES_USER: ${{ vars.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
