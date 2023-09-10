@@ -5,6 +5,9 @@ services:
     image: postgres:14
     container_name: db
     restart: always
+    args:
+      UID: 1000
+      GID: 1000
     volumes:
       - ./configs/postgres:/docker-entrypoint-initdb.d
       -  db_data:/var/lib/postgresql/data
