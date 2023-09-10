@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Reclaim cache directory
+        run: chown -R 1000:1000 $HOME/actions-runner/_work/Forum/Forum/configs/postgres
       - name: Docker compouse DOWN old containers
         run:  docker compose -f docker-compose.db.yml down -v
       - name: Docker compouse UP new containers
