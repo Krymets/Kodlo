@@ -14,10 +14,15 @@ services:
       - DEBUG=${DEBUG}
       - SECRET_KEY=${SECRET_KEY}
       - ENGINE=${ENGINE}
-      - HOST=${HOST}
-      - PORT=${PORT}
-      - DB=${DB}
-      - USER=${USER}
-      - PASSWORD=${PASSWORD}
-      - DATABASE=${DATABASE}
-
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - PG_DB=${PG_DB}
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - EMAIL_BACKEND=${EMAIL_BACKEND}"
+      - EMAIL_HOST=${EMAIL_HOST}"
+      - EMAIL_PORT=${EMAIL_PORT}"
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}"
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}"
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}"
