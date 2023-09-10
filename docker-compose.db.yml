@@ -3,11 +3,13 @@ version: "3.8"
 services:
   db:
     image: postgres:14
+    build:
+      context: .
+      args:
+        UID: 1000
+        GID: 1000
     container_name: db
     restart: always
-    args:
-      UID: 1000
-      GID: 1000
     volumes:
       - ./configs/postgres:/docker-entrypoint-initdb.d
       -  db_data:/var/lib/postgresql/data
