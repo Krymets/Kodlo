@@ -9,3 +9,7 @@ services:
     build:
       context: .
       target: production
+    networks:
+      - forum_network
+networks:
+  forum_network:

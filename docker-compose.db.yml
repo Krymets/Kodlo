@@ -11,6 +11,8 @@ services:
 
     ports:
       - 5432:5432
+    networks:
+      - forum_network
     environment:
       POSTGRES_MULTIPLE_DATABASES: ${DBS}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -28,7 +30,10 @@ services:
       - pgadmin_data:/var/lib/pgadmin/data
     depends_on:
       - db
-
+    networks:
+      - forum_network
+networks:
+  forum_network:
 volumes:
   db_data:
   pgadmin_data:
