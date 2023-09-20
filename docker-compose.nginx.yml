@@ -6,4 +6,3 @@ services:
     container_name: nginx
     ports:
       - 80:80
-      - 81:81

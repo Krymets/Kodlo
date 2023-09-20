@@ -9,7 +9,7 @@ services:
     volumes:
       - ./:/Forum
     ports:
-      - 8000:8000
+      - 8001:8000
     environment:
       - DEBUG=${DEBUG}
       - SECRET_KEY=${SECRET_KEY}

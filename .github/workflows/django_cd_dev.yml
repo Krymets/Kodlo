@@ -25,12 +25,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Docker compouse DOWN old containers
+
+      - name: Docker compouse DOWN old Django container
         run:  docker compose -f docker-compose.dev.yml down -v
-      - name: Docker compouse UP new containers
+      - name: Docker compouse UP Django container
         run: docker compose -f docker-compose.dev.yml up -d --build
       - name: Docker compouse MIGRATE models
         run: docker compose -f docker-compose.dev.yml exec web-dev python manage.py migrate --noinput
+      
+      - name: Docker compouse DOWN old Fronend container
+        run:  docker compose -f FrontEnd/docker-compose.yml down -v
+      - name: Docker compouse UP Fronend container
+        run: docker compose -f FrontEnd/docker-compose.yml up -d --build
+      
       - name: Clean up old docker resources 
         run: |
           docker container prune -f
