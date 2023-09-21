@@ -31,13 +31,13 @@ services:
   frontend:
     container_name: frontend
     image: frontend
-    # ports:
-    #   - 3000:3000
+    ports:
+      - 80:80
     build:
       context: ./FrontEnd
       target: production
     networks:
       - forum_network
-
+  
 networks:
   forum_network:
