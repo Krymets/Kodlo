@@ -3,7 +3,7 @@ import './Companies.css';
 import {ProductCard} from "./companies-product-cards/CompaniesProductCards";
 
 async function list_of_companies() {
-const companiesList = axios.get('http://localhost:8000/api/profiles/')
+const companiesList = axios.get('http://web-dev:8000/api/profiles/')
 
     .then(function (response) {
     return response.data;
