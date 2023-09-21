@@ -68,12 +68,14 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost',
     'http://127.0.0.1',
     'http://0.0.0.0',
+    'http://web-dev',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
     'http://0.0.0.0',
+    'http://web-dev',
 ]
 
 # For future:
