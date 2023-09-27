@@ -1,6 +1,8 @@
 import css from "./Table.module.css"
 import {useNavigate} from "react-router-dom";
 import PaginationButtons from "./PaginationButtons";
+import useSWR from "swr";
+import AdminPageFetcher from "../AdminPageFetcher";
 
 const COLUMN_NAMES = ["ID", "ФІО", "Пошта", "Телефон"]
 
@@ -52,6 +54,7 @@ const USERS = [
 
 function UserTable() {
 
+    const { data: fetchedUsers, error, isLoading } = useSWR(`${process.env.REACT_APP_BASE_API_URL}api/admin/users`, AdminPageFetcher);
     let navigate = useNavigate();
     const routeChange = (id) =>{
         let path = `/admin/users/${id}`;
@@ -70,18 +73,17 @@ function UserTable() {
                 </tr>
             </thead>
             <tbody>
-                {USERS.map((user) =>(
+                {!isLoading && fetchedUsers['results'].map((user) =>(
                     <tr className={css["table-element"]} onClick={() => routeChange(user.id)}>
                         <td className={css["table-element__text"]}>{user.id}</td>
                         <td className={css["table-element__text"]}>{user.surname} {user.name}</td>
-                        <td className={css["table-element__text"]}>{user.person_email}</td>
-                        <td className={css["table-element__text"]}>{user.phone_number}</td>
+                        <td className={css["table-element__text"]}>{user.email}</td>
+                        <td className={css["table-element__text"]}>{user.phone}</td>
                     </tr>
                 ))}
             </tbody>
         </table>
         </div>
-
     );
 };
 
