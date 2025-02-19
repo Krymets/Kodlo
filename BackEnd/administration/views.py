@@ -38,7 +38,7 @@ from administration.serializers import (
     MonthlyProfileStatisticsSerializer,
     AdminRegistrationSerializer,
     FeedbackCategorySerializer,
-    SendMessageSerializer,
+    SendMessageSerializer, ChangeIsStaffSerializer,
 )
 from administration.pagination import ListPagination
 from administration.models import (
@@ -94,7 +94,7 @@ class UserDetailView(UpdateAPIView):
     """
 
     permission_classes = [IsSuperUser]
-    serializer_class = AdminUserDetailSerializer
+    serializer_class = ChangeIsStaffSerializer
     queryset = CustomUser.objects.select_related("profile")
 
 

@@ -110,12 +110,30 @@ class AdminUserListSerializer(serializers.ModelSerializer):
             "is_superuser": obj.is_superuser,
             "is_deleted": obj.email.startswith("is_deleted_"),
             "is_inactive": not obj.is_active
-            and not obj.email.startswith("is_deleted_"),
+                           and not obj.email.startswith("is_deleted_"),
         }
         return data
 
 
 class AdminUserDetailSerializer(serializers.ModelSerializer):
+    company_name = serializers.SerializerMethodField()
+    class Meta:
+        model = CustomUser
+        fields = (
+            "name",
+            "surname",
+            "email",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "company_name",
+        )
+
+    def get_company_name(self, obj) -> bool:
+        return True if hasattr(obj, "profile") else False
+
+
+class ChangeIsStaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ("is_staff", "is_active")
