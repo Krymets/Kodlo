@@ -38,7 +38,7 @@ export function RestorePasswordFormContentComponent({ setIsValid }) {
   const errorMessageTemplates = {
     password: 'Пароль не відповідає вимогам',
     confirmPassword: 'Паролі не співпадають. Будь ласка, введіть однакові паролі в обидва поля',
-    maxLength: 'Кількість символів перевищує максимально допустиму (50 символів)',
+    maxLength: 'Кількість символів перевищує максимально допустиму (128 символів)',
   };
 
   const handleValidation = async () => {
@@ -108,13 +108,9 @@ export function RestorePasswordFormContentComponent({ setIsValid }) {
               message: errorMessageTemplates.password,
             },
             maxLength: {
-              value: 50,
+              value: 128,
               message: errorMessageTemplates.maxLength
             },
-            validate: (value) =>
-              watch('confirmPassword') !== value
-                ? errorMessageTemplates.confirmPassword
-                : null,
           }}
           errors={errors}
           togglePassword={togglePassword}
@@ -130,7 +126,7 @@ export function RestorePasswordFormContentComponent({ setIsValid }) {
           validation={{
             required: 'Не ввели новий пароль ще раз',
             maxLength: {
-              value: 50,
+              value: 128,
               message: errorMessageTemplates.maxLength
             },
             validate: (value) =>

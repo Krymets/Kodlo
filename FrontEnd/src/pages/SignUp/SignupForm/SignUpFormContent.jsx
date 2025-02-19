@@ -35,7 +35,7 @@ export function SignUpFormContentComponent(props) {
     nameSurnameFieldLength: 'Введіть від 2 до 50 символів',
     companyFieldLength: 'Введіть від 2 до 45 символів',
     notAllowedSymbols: 'Поле містить недопустимі символи та/або цифри',
-    maxLength: 'Кількість символів перевищує максимально допустиму (50 символів)',
+    maxLength: 'Кількість символів перевищує максимально допустиму (128 символів)',
   };
 
   const {
@@ -45,7 +45,6 @@ export function SignUpFormContentComponent(props) {
     getValues,
     setValue,
     setError,
-    clearErrors,
     trigger,
     formState: { errors, isValid },
   } = useForm({
@@ -60,17 +59,9 @@ export function SignUpFormContentComponent(props) {
   };
 
   const onChangeCheckbox = (event) => {
-    const { name, checked } = event.target;
-    setValue(name, checked);
-    const otherOption = name === 'yurosoba' ? 'fop' : 'yurosoba';
-    setValue(otherOption, false);
-    if (!getValues('yurosoba') && !getValues('fop')) {
-      setError('businessEntity', {
-        type: 'manual',
-        message: 'Виберіть, який суб\'єкт господарювання ви представляєте',
-      });
-    } else {
-      clearErrors('businessEntity');
+    const { value, checked } = event.target;
+    if (checked) {
+      setValue('businessEntity', [value]);
     }
   };
 
@@ -128,7 +119,7 @@ export function SignUpFormContentComponent(props) {
         name: getValues('companyName'),
         is_registered: getValues('representative').indexOf('company') > -1,
         is_startup: getValues('representative').indexOf('startup') > -1,
-        is_fop: getValues('fop'),
+        is_fop: getValues('businessEntity').indexOf('fop') > -1,
       },
     };
 
@@ -224,13 +215,9 @@ export function SignUpFormContentComponent(props) {
               message: errorMessageTemplates.password,
             },
             maxLength: {
-              value: 50,
+              value: 128,
               message: errorMessageTemplates.maxLength
             },
-            validate: (value) =>
-              watch('confirmPassword') !== value
-                ? errorMessageTemplates.confirmPassword
-                : null,
           }}
           errors={errors}
           togglePassword={togglePassword}
@@ -248,7 +235,7 @@ export function SignUpFormContentComponent(props) {
           validation={{
             required: 'Не ввели пароль ще раз',
             maxLength: {
-              value: 50,
+              value: 128,
               message: errorMessageTemplates.maxLength
             },
             validate: (value) =>
@@ -309,29 +296,33 @@ export function SignUpFormContentComponent(props) {
           }}
         />
         <SignUpCheckboxField
+          type="checkbox"
           label="Кого ви представляєте?"
           options={[
-            { name: 'company', value:'company', label: 'Зареєстрована компанія' },
-            { name: 'startup', value: 'startup', label: 'Стартап проект, який шукає інвестиції' },
+            { name: 'representative', value:'company', label: 'Зареєстрована компанія' },
+            { name: 'representative', value: 'startup', label: 'Стартап проект, який шукає інвестиції' },
           ]}
           register={register}
           validation={{
             required:
               'Виберіть, кого ви представляєте',
           }}
-          onChange=""
+          onChange={null}
           error={errors.representative}
         />
         <SignUpCheckboxField
           label="Який суб'єкт господарювання ви представляєте?"
           options={[
-            { name: 'fop', value:'', label: 'Фізична особа-підприємець' },
-            { name: 'yurosoba', value:'', label: 'Юридична особа' },
+            { name: 'businessEntity', value:'fop', label: 'Фізична особа-підприємець' },
+            { name: 'businessEntity', value:'yurosoba', label: 'Юридична особа' },
           ]}
           register={register}
-          validation=""
-          onChange={onChangeCheckbox}
+          validation={{
+            required:
+            'Виберіть, який суб\'єкт господарювання ви представляєте'
+          }}
           error={errors.businessEntity}
+          onChange={onChangeCheckbox}
         />
         <div className={styles['signup-form__checkboxes-container--rules']}>
           <label className={styles['rules__line--text']}>
