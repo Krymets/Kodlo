@@ -9,7 +9,6 @@ import  Cropper  from 'react-easy-crop';
 import { useAuth, useProfile } from '../../../hooks';
 import checkFormIsDirty from '../../../utils/checkFormIsDirty';
 import defineChanges from '../../../utils/defineChanges';
-import css from './FormComponents.module.css';
 
 import { DirtyFormContext } from '../../../context/DirtyFormContext';
 import CheckBoxField from './FormFields/CheckBoxField';
@@ -21,8 +20,11 @@ import Loader from '../../../components/Loader/Loader';
 import validateEdrpou from '../../../utils/validateEdrpou';
 import validateRnokpp from '../../../utils/validateRnokpp';
 import getCroppedImage from '../../../utils/getCroppedImage';
+import { formatTimeLeft } from '../../../utils/formatTimeLeft';
 import BanerModeration from './BanerModeration';
 import ProfileFormButton from '../UI/ProfileFormButton/ProfileFormButton';
+
+import css from './FormComponents.module.css';
 
 const LABELS = {
   name: 'Коротка назва компанії',
@@ -413,8 +415,6 @@ const GeneralInfo = (props) => {
     const croppedBlob  = await getCroppedImage(logoImage, croppedAreaPixels);
     const croppedLogoFile = new File([croppedBlob], logoFile.name, {type: logoFile.type});
 
-    setLogoImage(URL.createObjectURL(croppedBlob));
-
     const formData = new FormData();
     formData.append('image_path', logoFile);
     formData.append('cropped_image_path', croppedLogoFile);
@@ -428,6 +428,7 @@ const GeneralInfo = (props) => {
           uuid: response.data.uuid
         }};
       });
+      setLogoImage(URL.createObjectURL(croppedBlob));
       toast.success('Зображення успішно завантажене');
       setCropLogo(false);
     } catch (error) {
@@ -435,8 +436,13 @@ const GeneralInfo = (props) => {
         'Error uploading image:',
         error.response ? error.response.data : error.message
       );
-      if (!error.response || error.response.status !== 401) {
-        toast.error('Не вдалося завантажити банер/лого, сталася помилка');
+      if (!error.response || (error.response.status !== 401 && error.response.status !== 429)) {
+        toast.error('Не вдалося завантажити лого, сталася помилка');
+      }
+      if (error.response && error.response.status === 429) {
+        const timeLeft = parseInt(error.response.data.detail.match(/\d+/)[0], 10);
+        toast.error(`Ліміт завантаження зображень перевищено. Спробуйте через ${formatTimeLeft(timeLeft)}.`);
+        onLogoCancel();
       }
     }
   };
