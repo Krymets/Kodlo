@@ -3,6 +3,10 @@ import axios from 'axios';
 
 import css from './FooterAddress.module.css';
 
+function formatPhoneNumber(phone) {
+    if (!phone || phone.length !== 12) return phone;
+    return `+${phone.slice(0, 2)} ${phone.slice(2, 5)} ${phone.slice(5, 8)} ${phone.slice(8, 10)} ${phone.slice(10, 12)}`;
+}
 
 function FooterAddress() {
     const [contacts, setContacts] = useState(null);
@@ -59,7 +63,9 @@ function FooterAddress() {
                                     alt="Footer craft merge logo"
                                     title="CraftMerge">
                                 </img>
-                                <p className={css['footer-address__text-contacts']}>{contacts.phone}</p>
+                                <p className={css['footer-address__text-contacts']}>
+                                    {formatPhoneNumber(contacts.phone)}
+                                </p>
                             </div>
                         </div>
                     </div>
