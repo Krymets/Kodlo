@@ -39,7 +39,22 @@
 }
 
 @media only screen and (min-width: 1200px) {
-    .TermsAndConditions {
+    .TermsAndConditions__text_container {
+        padding: 64px 58px;
+        max-width: 1084px;
+    }
+
+    .TermsAndConditions__title {
+        font-size: 34px;
+        max-width: 1084px;
 
     }
+}
+
+@media only screen and (min-width: 1512px) {
+    .TermsAndConditions__text_container {
+        padding: 80px 214px;
+
+    }
+
 }
