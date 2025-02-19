@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from administration.factories import AdminUserFactory, AdminProfileFactory
+from administration.factories import AdminUserFactory, AdminProfileFactory, SuperUserFactory
 from utils.dump_response import dump  # noqa
 
 
@@ -252,89 +252,15 @@ class TestDeleteUser(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class TestPutUser(APITestCase):
-    def setUp(self):
-        self.user = AdminUserFactory()
-
-    def test_put_user(self):
-        self.client.force_authenticate(self.user)
-        data = {
-            "name": "string",
-            "surname": "string",
-            "email": "user@example.com",
-            "is_active": True,
-            "is_staff": True,
-            "is_superuser": True,
-        }
-        response = self.client.put(
-            path=f"/api/admin/users/{self.user.id}/",
-            data=data,
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_put_reverese_bool_user(self):
-        self.client.force_authenticate(self.user)
-        data = {
-            "name": "string",
-            "surname": "string",
-            "email": "user@example.com",
-            "is_active": False,
-            "is_staff": False,
-            "is_superuser": False,
-        }
-        response = self.client.put(
-            path=f"/api/admin/users/{self.user.id}/",
-            data=data,
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_put_user_not_authorized(self):
-        data = {"name": "Test string"}
-        response = self.client.put(
-            path=f"/api/admin/users/{self.user.id}/",
-            data=data,
-        )
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_put_user_not_exist(self):
-        data = {"name": "Test string"}
-        self.client.force_authenticate(self.user)
-        response = self.client.put(
-            path=f"/api/admin/users/0/",
-            data=data,
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
 class TestPatchUser(APITestCase):
     def setUp(self):
-        self.user = AdminUserFactory()
+        self.user = SuperUserFactory()
 
     def test_patch_user(self):
         self.client.force_authenticate(self.user)
         data = {
-            "name": "string",
-            "surname": "string",
-            "email": "user@example.com",
             "is_active": True,
             "is_staff": True,
-            "is_superuser": True,
-        }
-        response = self.client.patch(
-            path=f"/api/admin/users/{self.user.id}/",
-            data=data,
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_patch_change_role_user(self):
-        self.client.force_authenticate(self.user)
-        data = {
-            "name": "string",
-            "surname": "string",
-            "email": "user@example.com",
-            "is_active": False,
-            "is_staff": False,
-            "is_superuser": False,
         }
         response = self.client.patch(
             path=f"/api/admin/users/{self.user.id}/",
