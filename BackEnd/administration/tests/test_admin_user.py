@@ -1,7 +1,11 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from administration.factories import AdminUserFactory, AdminProfileFactory, SuperUserFactory
+from administration.factories import (
+    AdminUserFactory,
+    AdminProfileFactory,
+    SuperUserFactory,
+)
 from utils.dump_response import dump  # noqa
 
 
