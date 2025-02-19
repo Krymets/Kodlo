@@ -38,7 +38,8 @@ from administration.serializers import (
     MonthlyProfileStatisticsSerializer,
     AdminRegistrationSerializer,
     FeedbackCategorySerializer,
-    SendMessageSerializer, ChangeIsStaffSerializer,
+    SendMessageSerializer,
+    ChangeIsStaffSerializer,
 )
 from administration.pagination import ListPagination
 from administration.models import (

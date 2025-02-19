@@ -110,13 +110,14 @@ class AdminUserListSerializer(serializers.ModelSerializer):
             "is_superuser": obj.is_superuser,
             "is_deleted": obj.email.startswith("is_deleted_"),
             "is_inactive": not obj.is_active
-                           and not obj.email.startswith("is_deleted_"),
+            and not obj.email.startswith("is_deleted_"),
         }
         return data
 
 
 class AdminUserDetailSerializer(serializers.ModelSerializer):
     company_name = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
         fields = (
