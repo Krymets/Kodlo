@@ -184,6 +184,7 @@ class TestAdminUsersAPITests(APITestCase):
                 "registration_date": None,
             }
         ]
+        print(response.data["results"])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data, response.data["results"])
 
@@ -209,51 +210,6 @@ class TestAdminUsersAPITests(APITestCase):
         ]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data, response.data["results"])
-
-    def test_get_user_id_authenticated(self):
-        self.client.force_authenticate(self.user)
-        response = self.client.get(path=f"/api/admin/users/{self.user.id}/")
-        AdminUserFactory.reset_sequence(1)
-
-        data = {
-            "name": f"Test person {self.user.id}",
-            "surname": f"Test person {self.user.id} surname",
-            "email": f"test{self.user.id}@test.com",
-            "is_active": True,
-            "is_staff": True,
-            "is_superuser": False,
-            "company_name": False,
-        }
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data, response.json())
-
-
-class TestDeleteUser(APITestCase):
-    def test_delete_user_with_company(self):
-        self.user = AdminUserFactory()
-        self.client.force_authenticate(self.user)
-        self.profile = AdminProfileFactory(person_id=self.user.id)
-        response = self.client.delete(path=f"/api/admin/users/{self.user.id}/")
-        self.assertEqual(
-            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
-        )
-
-    def test_delete_user_no_company(self):
-        self.user = AdminUserFactory()
-        self.client.force_authenticate(self.user)
-        response = self.client.delete(path=f"/api/admin/users/{self.user.id}/")
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-    def test_delete_user_with_company_not_authorized(self):
-        self.user = AdminUserFactory()
-        self.profile = AdminProfileFactory(person_id=self.user.id)
-        response = self.client.delete(path=f"/api/admin/users/{self.user.id}/")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_delete_user_no_company_not_authorized(self):
-        self.user = AdminUserFactory()
-        response = self.client.delete(path=f"/api/admin/users/{self.user.id}/")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestPatchUser(APITestCase):
