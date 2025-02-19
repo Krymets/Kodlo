@@ -216,7 +216,7 @@ class TestPatchUser(APITestCase):
     def setUp(self):
         self.user = SuperUserFactory()
 
-    def test_patch_user(self):
+    def test_add_is_staff_user(self):
         self.client.force_authenticate(self.user)
         data = {
             "is_active": True,
@@ -228,8 +228,23 @@ class TestPatchUser(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_remove_is_staff_user(self):
+        self.client.force_authenticate(self.user)
+        data = {
+            "is_active": False,
+            "is_staff": False,
+        }
+        response = self.client.patch(
+            path=f"/api/admin/users/{self.user.id}/",
+            data=data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_patch_user_not_authorized(self):
-        data = {"name": "Test string"}
+        data = {
+            "is_active": "test_value",
+            "is_staff": "test_value",
+        }
         response = self.client.patch(
             path=f"/api/admin/users/{self.user.id}/",
             data=data,
@@ -237,7 +252,10 @@ class TestPatchUser(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_patch_user_not_exist(self):
-        data = {"name": "Test string"}
+        data = {
+            "is_active": "test_value",
+            "is_staff": "test_value",
+        }
         self.client.force_authenticate(self.user)
         response = self.client.patch(
             path=f"/api/admin/users/0/",
