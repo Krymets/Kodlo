@@ -184,7 +184,6 @@ class TestAdminUsersAPITests(APITestCase):
                 "registration_date": None,
             }
         ]
-        print(response.data["results"])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data, response.data["results"])
 
