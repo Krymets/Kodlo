@@ -58,7 +58,8 @@
     }
 
     .policy-content__copyright {
-        align-items: flex-end;
+        padding-top: 0px;
+        align-self: center;
     }
 }
 
@@ -70,6 +71,7 @@
     .policy-content__main {
         flex-direction: column;
         align-items: flex-start;
+        gap: 31px;
     }
 
     .policy-content-links {

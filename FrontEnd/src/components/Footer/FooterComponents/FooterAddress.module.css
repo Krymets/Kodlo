@@ -16,6 +16,7 @@
 .footer-address__text {
     display: flex;
     flex-direction: column;
+    gap: 35px;
 }
 
 .footer-address__company,
@@ -58,16 +59,22 @@
     gap: 10px;
 }
 
+.footer-address__text {
+    gap: 35px;
+}
+
 @media only screen and (min-width: 768px) {
+
+    .footer-address__company,
+    .footer-address__contacts {
+        width: 342.5px;
+    }
+
     .footer-address__block {
         flex-direction: column;
     }
 
-    .footer-address__contacts {
-        padding-left: 35px;
-    }
-
-    .footer-address__text{
+    .footer-address__text {
         flex-direction: row;
     }
 }
@@ -75,17 +82,13 @@
 @media only screen and (min-width: 1200px) {
     .footer-address__text {
         flex-direction: column;
+        width: 234px;
+        margin-bottom: auto;
     }
 
-    .footer-address__contacts {
-        padding-top: 25px;
-        padding-left: 0px;
-    }
-}
 
-@media only screen and (min-width: 1512px) {
-    .footer-address__contacts {
-        padding-top: 25px;
-        padding-left: 0px;
+    .footer-address__contacts-mail,
+    .footer-address__contacts-phone {
+        width: 234px;
     }
 }
