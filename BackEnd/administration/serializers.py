@@ -129,6 +129,13 @@ class AdminUserDetailSerializer(serializers.ModelSerializer):
             "is_superuser",
             "company_name",
         )
+        read_only_fields = (
+            "name",
+            "surname",
+            "email",
+            "is_superuser",
+            "company_name",
+        )
 
     def get_company_name(self, obj) -> bool:
         return True if hasattr(obj, "profile") else False
