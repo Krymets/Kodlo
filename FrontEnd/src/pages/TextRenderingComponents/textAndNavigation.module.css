@@ -2,7 +2,8 @@
     font-family: var(--font-main);
     font-size: 14px;
     font-weight: 400;
-    line-height: 22px;
+    line-height: 28px;
+    letter-spacing: -0,14px;
 }
 
 .text_content__margin_bottom{
@@ -10,7 +11,8 @@
     font-family: var(--font-main);
     font-size: 14px;
     font-weight: 400;
-    line-height: 22px;
+    line-height: 28px;
+    letter-spacing: -0,14px;
 }
 
 .text_content__heading{
@@ -26,5 +28,23 @@
     font-family: var(--font-main);
     font-size: 14px;
     font-weight: 400;
-    line-height: 22px;
+    line-height: 28px;
+    letter-spacing: -0,14px;
+}
+
+.text__margin_top{
+    margin-top: 24px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 28px;
+}
+
+.paragraph{
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 28px;
+    letter-spacing: -0,14px;
+
 }
