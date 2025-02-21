@@ -45,6 +45,16 @@ const RenderingTextContainer = ({ item, styles }) => {
     </ul>
   );
 
+  const renderParagraphMarginTop= () => (
+    <p
+      className={styles['text__margin_top']}
+      key={item.id || uuidv4()}
+      id={item.sectionId || null}
+    >
+      {item.text}
+    </p>
+  );
+
   let element = null;
 
   switch (item.type) {
@@ -56,6 +66,9 @@ const RenderingTextContainer = ({ item, styles }) => {
       break;
     case 'paragraph__margin_bottom':
       element = renderParagraphMarginBottom();
+      break;
+    case 'text__margin_top':
+      element = renderParagraphMarginTop();
       break;
     case 'list-item':
       element = renderListItem();
