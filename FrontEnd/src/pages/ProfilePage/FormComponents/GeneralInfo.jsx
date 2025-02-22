@@ -76,6 +76,11 @@ const GeneralInfo = (props) => {
   const [profile, setProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
   const [bannerImage, setBannerImage] = useState(props.profile?.banner?.path);
+  const [bannerFile, setBannerFile] = useState(null);
+  const [cropBanner, setCropBanner] = useState(false);
+  const [croppedBannerPixels, setCroppedBannerPixels] = useState(null);
+  const [bannerCrop, setBannerCrop] = useState({ x: 0, y: 0 });
+  const [bannerZoom, setBannerZoom] = useState(1);
   const [logoImage, setLogoImage] = useState(props.profile?.logo?.cropped_path);
   const [bannerImageError, setBannerImageError] = useState(null);
   const [logoImageError, setLogoImageError] = useState(null);
@@ -341,34 +346,46 @@ const GeneralInfo = (props) => {
     });
   };
 
-  const uploadImage = async (url, imageKey, image) => {
-    const setImage =
-      imageKey === 'banner'
-      ? setBannerImage
-      : setLogoImage;
-    if (image instanceof File || image === '') {
-      const formData = new FormData();
-      formData.append('image_path', image);
-      try {
+  const uploadImage = async (url, imageKey, originalFile, croppedBlob) => {
+    if (!originalFile || !croppedBlob) return;
+
+    const croppedFile = new File([croppedBlob], originalFile.name, { type: originalFile.type });
+    const formData = new FormData();
+    formData.append('image_path', originalFile);
+    formData.append('cropped_image_path', croppedFile);
+
+    try {
         const response = await axios.post(url, formData);
-        setImage(URL.createObjectURL(image));
-        setProfile((prevState) => {
-          return { ...prevState, [imageKey]: {
-            ...prevState[imageKey],
-            uuid: response.data.uuid
-          }};
-        });
-      } catch (error) {
-        console.error(
-          'Error uploading image:',
-          error.response ? error.response.data : error.message
-        );
-        if (!error.response || error.response.status !== 401) {
-          toast.error('Не вдалося завантажити банер/лого, сталася помилка');
+        setProfile((prevState) => ({
+            ...prevState,
+            [imageKey]: { ...prevState[imageKey], uuid: response.data.uuid }
+        }));
+
+        if (imageKey === 'banner') {
+            setBannerImage(URL.createObjectURL(croppedBlob));
+            setCropBanner(false);
+        } else {
+            setLogoImage(URL.createObjectURL(croppedBlob));
+            setCropLogo(false);
         }
-      }
+
+        toast.success(`${imageKey === 'banner' ? 'Банер' : 'Лого'} успішно завантажено`);
+    } catch (error) {
+        console.error(`Помилка завантаження ${imageKey}:`, error.response ? error.response.data : error.message);
+
+        if (!error.response || (error.response.status !== 401 && error.response.status !== 429)) {
+            toast.error(`Не вдалося завантажити ${imageKey === 'banner' ? 'банер' : 'лого'}, сталася помилка`);
+        }
+
+        if (error.response && error.response.status === 429) {
+            const timeLeft = parseInt(error.response.data.detail.match(/\d+/)[0], 10);
+            toast.error(`Ліміт завантаження перевищено. Спробуйте через ${formatTimeLeft(timeLeft)}.`);
+
+            if (imageKey === 'banner') onBannerCancel();
+            else onLogoCancel();
+        }
     }
-  };
+};
 
   const checkMaxImageSize = (name, image) => {
     const maxSize =
@@ -388,19 +405,62 @@ const GeneralInfo = (props) => {
   const onUpdateBanner = async (e) => {
     const file = e.target.files[0];
     e.target.value = '';
-    const imageUrl = `${process.env.REACT_APP_BASE_API_URL}/api/image/banner/`;
-    if (file && checkMaxImageSize(e.target.name, file)) {
-      await uploadImage(imageUrl, e.target.name, file);
+    if (file && checkMaxImageSize('banner', file)) {
+      const tempImg = new Image();
+      tempImg.onload = () => {
+        if (tempImg.naturalWidth < 1512 || tempImg.naturalHeight < 368) {
+          toast.error('Зображення має бути мінімум 1512x368 пікселів');
+          return;
+        }
+        setBannerImage(URL.createObjectURL(file));
+        setCropBanner(true);
+        setBannerFile(file);
+      };
+      tempImg.onerror = () => {
+        toast.error('Не вдалося завантажити інтерфейс обрізання. Спробуйте ще раз.');
+      };
+      tempImg.src = URL.createObjectURL(file);
     }
   };
+  const onBannerCancel = () => {
+    setCropBanner(false);
+    setBannerImage(props.profile?.banner?.cropped_path);
+  };
 
+  const onBannerSubmit = async (e) => {
+    e.preventDefault();
+    if (!bannerFile || !croppedBannerPixels) return;
+    try {
+      const croppedBlob = await getCroppedImage(bannerImage, croppedBannerPixels);
+      if (!croppedBlob) {
+        toast.error('Не вдалося обрізати банер. Спробуйте ще раз.');
+        return;
+      }
+      const url = `${process.env.REACT_APP_BASE_API_URL}/api/image/banner/`;
+      await uploadImage(url, 'banner', bannerFile, croppedBlob);
+    } catch (error) {
+      console.error('Помилка при обрізанні банера:', error);
+      toast.error('Не вдалося зберегти банер. Спробуйте ще раз.');
+    }
+  };
   const onUpdateLogo = async (e) => {
     const file = e.target.files[0];
     e.target.value = '';
     if (file && checkMaxImageSize(e.target.name, file)) {
-      setLogoImage(URL.createObjectURL(file));
-      setCropLogo(true);
-      setlogoFile(file);
+      const tempImg = new Image();
+      tempImg.onload = () => {
+        if (tempImg.naturalWidth < 300 || tempImg.naturalHeight < 300) {
+          toast.error('Логотип має бути мінімум 300x300 пікселів.');
+          return;
+        }
+        setLogoImage(URL.createObjectURL(file));
+        setCropLogo(true);
+        setlogoFile(file);
+      };
+      tempImg.onerror = () => {
+        toast.error('Не вдалося завантажити інтерфейс обрізання. Спробуйте ще раз.');
+      };
+      tempImg.src = URL.createObjectURL(file);
     }
   };
 
@@ -411,66 +471,45 @@ const GeneralInfo = (props) => {
 
   const onLogoSubmit = async (e) => {
     e.preventDefault();
+    if (!logoFile || !croppedAreaPixels) return;
 
-    const croppedBlob  = await getCroppedImage(logoImage, croppedAreaPixels);
-    const croppedLogoFile = new File([croppedBlob], logoFile.name, {type: logoFile.type});
-
-    const formData = new FormData();
-    formData.append('image_path', logoFile);
-    formData.append('cropped_image_path', croppedLogoFile);
-
-    const url = `${process.env.REACT_APP_BASE_API_URL}/api/image/logo/`;
     try {
-      const response = await axios.post(url, formData);
-      setProfile((prevState) => {
-        return { ...prevState, ['logo']: {
-          ...prevState['logo'],
-          uuid: response.data.uuid
-        }};
-      });
-      setLogoImage(URL.createObjectURL(croppedBlob));
-      toast.success('Зображення успішно завантажене');
-      setCropLogo(false);
-    } catch (error) {
-      console.error(
-        'Error uploading image:',
-        error.response ? error.response.data : error.message
-      );
-      if (!error.response || (error.response.status !== 401 && error.response.status !== 429)) {
-        toast.error('Не вдалося завантажити лого, сталася помилка');
-      }
-      if (error.response && error.response.status === 429) {
-        const timeLeft = parseInt(error.response.data.detail.match(/\d+/)[0], 10);
-        toast.error(`Ліміт завантаження зображень перевищено. Спробуйте через ${formatTimeLeft(timeLeft)}.`);
-        onLogoCancel();
-      }
-    }
-  };
+        const croppedBlob = await getCroppedImage(logoImage, croppedAreaPixels);
+        if (!croppedBlob) {
+            toast.error('Не вдалося обрізати лого');
+            return;
+        }
 
+        const url = `${process.env.REACT_APP_BASE_API_URL}/api/image/logo/`;
+        await uploadImage(url, 'logo', logoFile, croppedBlob);
+    } catch (error) {
+        console.error('Помилка при обрізанні логотипу:', error);
+    }
+};
   const onLogoCropComplete = ( _, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
-  const deleteImageHandler = async (name) => {
-    const imageUrl =
-      name === 'banner'
-      ? `${process.env.REACT_APP_BASE_API_URL}/api/image/banner/${profile.banner?.uuid}`
-      : `${process.env.REACT_APP_BASE_API_URL}/api/image/logo/${profile.logo?.uuid}`;
-    try {
-      await axios.delete(imageUrl);
-      if (name === 'banner') setBannerImage(null);
-      if (name === 'logo') setLogoImage(null);
-
-      setProfile((prevState) => {
-        const newState = { ...prevState, [name]: null };
-        return newState;
-    });
-  } catch (error) {
-    console.error('Error deleting image:',
-      error.response ? error.response.data : error.message);
-    toast.error('Не вдалося видалити банер/лого, сталася помилка');
-  }
+  const onBannerCropComplete = (_, croppedAreaPixels) => {
+    setCroppedBannerPixels(croppedAreaPixels);
   };
+
+  const deleteImageHandler = async (name) => {
+    const imageUrl = name === 'banner'
+        ? `${process.env.REACT_APP_BASE_API_URL}/api/image/banner/${profile.banner?.uuid}`
+        : `${process.env.REACT_APP_BASE_API_URL}/api/image/logo/${profile.logo?.uuid}`;
+
+    try {
+        await axios.delete(imageUrl);
+        if (name === 'banner') setBannerImage(null);
+        if (name === 'logo') setLogoImage(null);
+
+        setProfile((prevState) => ({ ...prevState, [name]: null }));
+    } catch (error) {
+        console.error('Error deleting image:', error.response ? error.response.data : error.message);
+        toast.error('Не вдалося видалити банер/лого, сталася помилка');
+    }
+};
 
   const errorMessages = {
     'profile with this edrpou already exists.':
@@ -654,6 +693,36 @@ const GeneralInfo = (props) => {
               onDeleteImage={deleteImageHandler}
               profile={mainProfile}
             />
+              {cropBanner && (
+                  <Tooltip
+                    title={
+                      'Оберіть область банера, яка буде відображатись на картці компанії.\nНа сторінці компанії буде відображатись оригінальне зображення.'
+                    }
+                    open={true}
+                  >
+                    <div>
+                      <div className={css['crop-container']}>
+                        <Cropper
+                          image={bannerImage}
+                          crop={bannerCrop}
+                          zoom={bannerZoom}
+                          onCropChange={setBannerCrop}
+                          onCropComplete={onBannerCropComplete}
+                          onZoomChange={setBannerZoom}
+                          aspect={16 / 9}
+                        />
+                      </div>
+                      <div className={css['submit-button__container']}>
+                        <button className={css['submit-button']} onClick={onBannerSubmit}>
+                          Зберегти
+                        </button>
+                        <button className={css['submit-button']} onClick={onBannerCancel}>
+                          Скасувати
+                        </button>
+                      </div>
+                    </div>
+                  </Tooltip>
+                )}
             <ImageField
               accept="image/png, image/jpeg"
               inputType="file"
