@@ -79,9 +79,9 @@ export default function CompanyCard({
           {profile.saved_is_updated &&
             <div className={styles['company-card__badge-is-updated']}>Оновлено</div>}
           <div className={styles['company-card__image-frame']}>
-            {profile.banner?.path ? (
+            {profile.banner?.cropped_path ? (
               <img
-                src={profile.banner?.path}
+                src={profile.banner?.cropped_path}
                 alt="Company Banner"
                 className={styles['company-card__image']}
                 title="Company Banner"

@@ -75,7 +75,7 @@ const GeneralInfo = (props) => {
   const { profile: mainProfile, mutate: profileMutate } = useProfile();
   const [profile, setProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
-  const [bannerImage, setBannerImage] = useState(props.profile?.banner?.cropped_path || props.profile?.banner?.path);
+  const [bannerImage, setBannerImage] = useState(props.profile?.banner?.cropped_path);
   const [bannerFile, setBannerFile] = useState(null);
   const [cropBanner, setCropBanner] = useState(false);
   const [croppedBannerPixels, setCroppedBannerPixels] = useState(null);
