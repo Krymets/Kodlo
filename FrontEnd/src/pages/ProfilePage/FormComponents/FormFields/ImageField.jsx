@@ -129,7 +129,7 @@ const ImageField = ({
                 <PendingStatus profile={profile} elementType="banner" />
                 <div
                   className={css['upload-file__banner-image--card']}
-                  style={backgroundImage}
+                  style={{ background: `url(${profile?.banner?.path}) lightgray 50% / cover no-repeat` }}
                 />
               </div>
             </div>
