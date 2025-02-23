@@ -75,7 +75,7 @@ const GeneralInfo = (props) => {
   const { profile: mainProfile, mutate: profileMutate } = useProfile();
   const [profile, setProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
-  const [bannerImage, setBannerImage] = useState(props.profile?.banner?.path);
+  const [bannerImage, setBannerImage] = useState(props.profile?.banner?.cropped_path || props.profile?.banner?.path);
   const [bannerFile, setBannerFile] = useState(null);
   const [cropBanner, setCropBanner] = useState(false);
   const [croppedBannerPixels, setCroppedBannerPixels] = useState(null);
@@ -353,25 +353,37 @@ const GeneralInfo = (props) => {
     const formData = new FormData();
     formData.append('image_path', originalFile);
     formData.append('cropped_image_path', croppedFile);
-
     try {
         const response = await axios.post(url, formData);
-        setProfile((prevState) => ({
-            ...prevState,
-            [imageKey]: { ...prevState[imageKey], uuid: response.data.uuid }
-        }));
 
+        setProfile((prevState) => {
+            const updatedProfile = {
+                ...prevState,
+                [imageKey]: {
+                    ...prevState[imageKey],
+                    uuid: response.data.uuid,
+                    path: response.data.image_path,
+                    cropped_path: response.data.cropped_image_path
+                }
+            };
+            return updatedProfile;
+        });
         if (imageKey === 'banner') {
-            setBannerImage(URL.createObjectURL(croppedBlob));
+            const bannerURL = response.data.cropped_image_path
+                ? `${response.data.cropped_image_path}?timestamp=${Date.now()}`
+                : response.data.image_path;
+            setBannerImage(bannerURL);
             setCropBanner(false);
         } else {
-            setLogoImage(URL.createObjectURL(croppedBlob));
+            const logoURL = response.data.cropped_image_path
+                ? `${response.data.cropped_image_path}?timestamp=${Date.now()}`
+                : response.data.image_path;
+            setLogoImage(logoURL);
             setCropLogo(false);
         }
 
         toast.success(`${imageKey === 'banner' ? 'Банер' : 'Лого'} успішно завантажено`);
     } catch (error) {
-        console.error(`Помилка завантаження ${imageKey}:`, error.response ? error.response.data : error.message);
 
         if (!error.response || (error.response.status !== 401 && error.response.status !== 429)) {
             toast.error(`Не вдалося завантажити ${imageKey === 'banner' ? 'банер' : 'лого'}, сталася помилка`);
@@ -439,7 +451,6 @@ const GeneralInfo = (props) => {
       const url = `${process.env.REACT_APP_BASE_API_URL}/api/image/banner/`;
       await uploadImage(url, 'banner', bannerFile, croppedBlob);
     } catch (error) {
-      console.error('Помилка при обрізанні банера:', error);
       toast.error('Не вдалося зберегти банер. Спробуйте ще раз.');
     }
   };
