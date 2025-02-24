@@ -86,7 +86,7 @@ const GeneralInfo = (props) => {
   const [edrpouFieldError, setEdrpouFieldError] = useState(null);
   const [rnokppFieldError, setRnokppFieldError] = useState(null);
   const [companyTypeError, setCompanyTypeError] = useState(null);
-
+  const [bannerOriginalPreview, setBannerOriginalPreview] = useState(null);
   const [cropLogo, setCropLogo] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -417,6 +417,7 @@ const GeneralInfo = (props) => {
         setBannerImage(URL.createObjectURL(file));
         setCropBanner(true);
         setBannerFile(file);
+        setBannerOriginalPreview(URL.createObjectURL(file));
       } else if (type === 'logo') {
         if (tempImg.naturalWidth < 300 || tempImg.naturalHeight < 300) {
           toast.error('Логотип має бути мінімум 300x300 пікселів.');
@@ -680,13 +681,14 @@ const GeneralInfo = (props) => {
               error={bannerImageError}
               onDeleteImage={deleteImageHandler}
               profile={mainProfile}
+              originalPreview={bannerOriginalPreview}
             />
             {cropBanner && (
               <CropModal
                 image={bannerImage}
                 crop={bannerCrop}
                 zoom={bannerZoom}
-                aspect={16 / 9}
+                aspect={4.11}
                 onCropChange={setBannerCrop}
                 onZoomChange={setBannerZoom}
                 onCropComplete={(a, croppedPixels) =>

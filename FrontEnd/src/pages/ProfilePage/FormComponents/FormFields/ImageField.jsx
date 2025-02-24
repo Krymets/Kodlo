@@ -17,6 +17,7 @@ const ImageField = ({
   onDeleteImage,
   profile,
   error,
+  originalPreview,
 }) => {
 
   const [modal, setModal] = useState(false);
@@ -128,9 +129,13 @@ const ImageField = ({
               <div className={css['tooltip-container']}>
                 <PendingStatus profile={profile} elementType="banner" />
                 <div
-                  className={css['upload-file__banner-image--card']}
-                  style={{ background: `url(${profile?.banner?.path}) lightgray 50% / cover no-repeat` }}
-                />
+                    className={css['upload-file__banner-image--card']}
+                    style={{
+                      background: `url(${
+                        originalPreview || profile?.banner?.path
+                      }) lightgray 50% / cover no-repeat`,
+                    }}
+                  />
               </div>
             </div>
           </>
@@ -161,6 +166,7 @@ ImageField.propTypes = {
   onDeleteImage: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   error: PropTypes.string,
+  originalPreview: PropTypes.string,
 };
 
 export default ImageField;
