@@ -25,6 +25,11 @@ import ProfileFormButton from '../UI/ProfileFormButton/ProfileFormButton';
 
 import css from './FormComponents.module.css';
 
+const MIN_BANNER_WIDTH = 1512;
+const MIN_BANNER_HEIGHT = 368;
+const MIN_LOGO_WIDTH = 300;
+const MIN_LOGO_HEIGHT = 300;
+
 const LABELS = {
   name: 'Коротка назва компанії',
   official_name: 'Юридична назва компанії',
@@ -72,26 +77,32 @@ const fetcher = (...args) => axios.get(...args).then((res) => res.data);
 const GeneralInfo = (props) => {
   const { user } = useAuth();
   const { profile: mainProfile, mutate: profileMutate } = useProfile();
+
   const [profile, setProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
+
+  const [edrpouFieldError, setEdrpouFieldError] = useState(null);
+  const [rnokppFieldError, setRnokppFieldError] = useState(null);
+  const [companyTypeError, setCompanyTypeError] = useState(null);
+
+  // --- Banner states ---
   const [bannerImage, setBannerImage] = useState(props.profile?.banner?.cropped_path);
   const [bannerFile, setBannerFile] = useState(null);
   const [cropBanner, setCropBanner] = useState(false);
   const [croppedBannerPixels, setCroppedBannerPixels] = useState(null);
   const [bannerCrop, setBannerCrop] = useState({ x: 0, y: 0 });
   const [bannerZoom, setBannerZoom] = useState(1);
-  const [logoImage, setLogoImage] = useState(props.profile?.logo?.cropped_path);
   const [bannerImageError, setBannerImageError] = useState(null);
-  const [logoImageError, setLogoImageError] = useState(null);
-  const [edrpouFieldError, setEdrpouFieldError] = useState(null);
-  const [rnokppFieldError, setRnokppFieldError] = useState(null);
-  const [companyTypeError, setCompanyTypeError] = useState(null);
   const [bannerOriginalPreview, setBannerOriginalPreview] = useState(null);
+
+  // --- Logo states ---
+  const [logoImage, setLogoImage] = useState(props.profile?.logo?.cropped_path);
   const [cropLogo, setCropLogo] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
+  const [logoImageError, setLogoImageError] = useState(null);
 
   const { data: fetchedRegions, isLoading: isRegionLoading } = useSWR(
     `${process.env.REACT_APP_BASE_API_URL}/api/regions/`,
@@ -410,7 +421,7 @@ const GeneralInfo = (props) => {
     const tempImg = new Image();
     tempImg.onload = () => {
       if (type === 'banner') {
-        if (tempImg.naturalWidth < 1512 || tempImg.naturalHeight < 368) {
+        if (tempImg.naturalWidth < MIN_BANNER_WIDTH || tempImg.naturalHeight < MIN_BANNER_HEIGHT) {
           toast.error('Банер має бути мінімум 1512x368 пікселів');
           return;
         }
@@ -419,7 +430,7 @@ const GeneralInfo = (props) => {
         setBannerFile(file);
         setBannerOriginalPreview(URL.createObjectURL(file));
       } else if (type === 'logo') {
-        if (tempImg.naturalWidth < 300 || tempImg.naturalHeight < 300) {
+        if (tempImg.naturalWidth < MIN_LOGO_WIDTH || tempImg.naturalHeight < MIN_LOGO_HEIGHT) {
           toast.error('Логотип має бути мінімум 300x300 пікселів.');
           return;
         }
