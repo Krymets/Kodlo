@@ -41,7 +41,7 @@ function FooterAddress() {
                 </p>
             ) : contacts && (
                 <>
-                    <div className={css['footer-address__text']}>
+                    <div className={css['footer-address__text-container']}>
                         <div className={css['footer-address__company']}>
                             <p className={css['footer-address__text']}>{contacts.company_name}</p>
                             <p className={css['footer-address__text']}>{contacts.address}</p>

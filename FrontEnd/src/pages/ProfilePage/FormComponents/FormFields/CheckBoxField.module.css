@@ -48,9 +48,8 @@
 
 .representative__checkboxes--company-type {
     display: flex;
-    width: 246px;
+    width: 285px;
     align-items: flex-start;
-    gap: 273px;
 }
 
 .form-control {

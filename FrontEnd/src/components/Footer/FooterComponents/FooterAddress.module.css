@@ -13,9 +13,10 @@
     display: flex;
 }
 
-.footer-address__text {
+.footer-address__text-container {
     display: flex;
     flex-direction: column;
+    gap: 35px;
 }
 
 .footer-address__company,
@@ -59,37 +60,42 @@
     font-weight: 400;
     line-height: 20px;
     letter-spacing: -0.16px;
-    gap: 10px;
 }
 
 @media only screen and (min-width: 768px) {
+
+    .footer-address__company,
+    .footer-address__contacts {
+        padding-top: 0;
+        width: 342.5px;
+    }
+
     .footer-address__block {
         flex-direction: column;
     }
 
-    .footer-address__contacts {
-        padding-left: 35px;
-    }
-
-    .footer-address__text{
+    .footer-address__text-container {
         flex-direction: row;
     }
 }
 
 @media only screen and (min-width: 1200px) {
-    .footer-address__text {
+    .footer-address__text-container {
         flex-direction: column;
+        gap: 0;
+        width: 241px;
+        height: 143px;
+        justify-content: space-between;
     }
 
+    .footer-address__company,
     .footer-address__contacts {
-        padding-top: 25px;
-        padding-left: 0px;
+        width: 241px;
     }
-}
 
-@media only screen and (min-width: 1512px) {
-    .footer-address__contacts {
-        padding-top: 25px;
-        padding-left: 0px;
+
+    .footer-address__contacts-mail,
+    .footer-address__contacts-phone {
+        width: 234px;
     }
 }

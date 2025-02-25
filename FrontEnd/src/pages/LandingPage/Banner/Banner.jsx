@@ -8,14 +8,11 @@ const MainBanner = () => {
         <div className={styles['main-baner-text']}>
           <h2 className={styles['main-baner-text__logo']}>CRAFTMERGE</h2>
           <h3 className={styles['main-baner-text__explanation']}>Обʼєднуємо крафтових виробників та інноваторів</h3>
-          <div className={styles['main-banner-link__container']}>
-          <Link
-                  className={styles['main-banner-link']}
-                  to="/about-us"
-                >
-                  Детальніше про нас
+          <Link to="/about-us" className={styles['main-banner-link__container']}>
+            <div className={styles['main-banner-link']}>
+              Детальніше про нас
+            </div>
           </Link>
-          </div>
         </div>
         <div>
           <img className={styles['main-banner__img']}
