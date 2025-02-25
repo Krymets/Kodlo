@@ -419,4 +419,4 @@ class FeedbackCategoryDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = FeedbackCategory.objects.all()
     serializer_class = FeedbackCategorySerializer
-    permission_classes = [IsStaffUser]
+    permission_classes = [IsStaffUserOrReadOnly]
