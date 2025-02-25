@@ -13,6 +13,7 @@ import styles from './SignUpFormContent.module.css';
 import {
   EMAIL_PATTERN,
   PASSWORD_PATTERN,
+  ALLOWED_NAME_SURNAME_SYMBOLS_PATTERN,
   NAME_SURNAME_PATTERN,
   COMPANY_NAME_PATTERN,
 } from '../../../constants/constants';
@@ -66,10 +67,9 @@ export function SignUpFormContentComponent(props) {
   };
 
   const validateNameSurname = (value) => {
-    const allowedSymbolsPattern = /^[a-zA-Zа-щюяьА-ЩЮЯЬїЇіІєЄґҐ'\s]+$/;
     const letterCount = (value.match(/[a-zA-Zа-щюяьА-ЩЮЯЬїЇіІєЄґҐ]/g) || [])
       .length;
-    if (!allowedSymbolsPattern.test(value)) {
+    if (!ALLOWED_NAME_SURNAME_SYMBOLS_PATTERN.test(value)) {
       return errorMessageTemplates.notAllowedSymbols;
     }
     if (letterCount < 2) {
