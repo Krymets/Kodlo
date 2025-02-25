@@ -69,7 +69,7 @@ class AdminRegistrationSerializer(serializers.Serializer):
     def create(self, validated_data):
         email = validated_data.get("email").lower()
         password = generate_password()
-        
+
         admin = User.objects.create(
             email=email,
             is_staff=True,
