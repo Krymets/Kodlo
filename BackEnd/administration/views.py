@@ -406,7 +406,7 @@ class FeedbackCategoryListView(ListCreateAPIView):
 
     queryset = FeedbackCategory.objects.all().order_by("id")
     serializer_class = FeedbackCategorySerializer
-    permission_classes = [IsStaffUser]
+    permission_classes = [IsStaffUserOrReadOnly]
     pagination_class = ListPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = FeedbackCategoryFilter
@@ -419,4 +419,4 @@ class FeedbackCategoryDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = FeedbackCategory.objects.all()
     serializer_class = FeedbackCategorySerializer
-    permission_classes = [IsStaffUserOrReadOnly]
+    permission_classes = [IsStaffUser]
