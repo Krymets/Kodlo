@@ -160,6 +160,8 @@ export default function ProfileListPage({ isAuthorized, isSaved }) {
     updateQueryParams(page);
   };
 
+  const emptyText = !isSaved ? 'Жодна компанія не відповідає обраному фільтру.' : 'У вас немає збережених компаній у цій категорії.';
+
   return (
     <div className={css.page}>
       {error && error.response.status !==401 ? (
@@ -214,7 +216,7 @@ export default function ProfileListPage({ isAuthorized, isSaved }) {
               <div className={css['company-list__content--items']}>
                 <ProfileList
                   isAuthorized={isAuthorized}
-                  emptyText={'Жодна компанія не відповідає обраному фільтру.'}
+                  emptyText={emptyText}
                   profiles={profiles}
                   items={fetchedProfiles?.total_items}
                   paginationFunc={handlePageChange}
