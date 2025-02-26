@@ -7,6 +7,7 @@ import styles from './Contact.module.css';
 
 const Contact = () => {
     const [percent, setPercent] = useState(-50);
+    const [isFormValid, setIsFormValid] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const timerRef = useRef();
 
@@ -24,15 +25,24 @@ const Contact = () => {
         setIsLoading(loadingState);
     };
 
+    const handleIsValid = (validState) => {
+        setIsFormValid(validState);
+    };
+
     return (
         <SignUpComponentsPageLayout
             header={'Зворотній зв\'язок'}
-            content={<ContactFormContent onLoading={handleLoading}/>}
+            content={<ContactFormContent onLoading={handleLoading} formIsValid={handleIsValid}/>}
             footer={
                 <button
                     form="contactForm"
-                    className={styles['contact__button_send']}
+                    className={
+                        !isFormValid
+                        ? styles['contact__button_send__disabled']
+                        : styles['contact__button_send']
+                    }
                     type="submit"
+                    disabled={!isFormValid}
                 >
                 {isLoading ? <Spin percent={percent}/> : 'Надіслати'}
               </button>

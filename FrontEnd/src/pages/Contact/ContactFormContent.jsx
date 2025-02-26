@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
@@ -18,7 +18,7 @@ const fetcher = async (url) => {
     return response.data;
 };
 
-export function ContactFormContent({ onLoading }) {
+export function ContactFormContent({ onLoading, formIsValid }) {
     const [modal, setModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
@@ -27,7 +27,7 @@ export function ContactFormContent({ onLoading }) {
         handleSubmit,
         reset,
         control,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm({
         mode: 'all',
         defaultValues: {
@@ -41,6 +41,10 @@ export function ContactFormContent({ onLoading }) {
     const categories = data?.results?.length
         ? data.results.map(cat => ({ value: cat.name, label: cat.name }))
         : [{ value: 'Інше', label: 'Інше' }];
+
+    useEffect(() => {
+        formIsValid(isValid);
+    }, [isValid]);
 
     const onSubmit = async (value) => {
         onLoading(true);
