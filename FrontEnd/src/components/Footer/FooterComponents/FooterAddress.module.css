@@ -30,7 +30,6 @@
 
 .footer-address__company {
     min-width: 203px;
-    max-width: 300px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
