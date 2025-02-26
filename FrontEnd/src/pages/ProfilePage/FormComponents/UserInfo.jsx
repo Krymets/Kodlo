@@ -9,6 +9,7 @@ import defineChanges from '../../../utils/defineChanges';
 import HalfFormField from './FormFields/HalfFormField';
 import Loader from '../../../components/Loader/Loader';
 import ProfileFormButton from '../UI/ProfileFormButton/ProfileFormButton';
+import { ALLOWED_NAME_SURNAME_SYMBOLS_PATTERN } from '../../../constants/constants';
 import css from './FormComponents.module.css';
 
 const LABELS = {
@@ -64,8 +65,8 @@ const UserInfo = (props) => {
     let errorMessage = [];
     const allowedSymbolsPatterns = {
       person_position: /^[a-zA-Zа-щюяьА-ЩЮЯЬїЇіІєЄґҐ\-'\s]+$/,
-      name: /^[a-zA-Zа-щюяьА-ЩЮЯЬїЇіІєЄґҐ'\s]+$/,
-      surname: /^[a-zA-Zа-щюяьА-ЩЮЯЬїЇіІєЄґҐ'\s]+$/,
+      name: ALLOWED_NAME_SURNAME_SYMBOLS_PATTERN,
+      surname: ALLOWED_NAME_SURNAME_SYMBOLS_PATTERN,
     };
     const letterCount = (
       fieldValue.match(/[a-zA-Zа-щюяьА-ЩЮЯЬїЇіІєЄґҐ]/g) || []
