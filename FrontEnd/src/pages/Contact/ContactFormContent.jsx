@@ -113,6 +113,7 @@ export function ContactFormContent({ onLoading, formIsValid }) {
 
                 <div className={styles['contact__field']}>
                     <div className={styles['contact-form__label']}>
+                        <label className={styles['contact-form__label--required']}>*</label>
                         <label className={styles['contact-form__label--text']}>Категорія:</label>
                     </div>
                     <Controller
