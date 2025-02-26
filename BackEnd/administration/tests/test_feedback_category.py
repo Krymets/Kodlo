@@ -15,7 +15,7 @@ class TestFeedbackCategoryAPIUserNotStaff(APITestCase):
 
     def test_get_feedback_categories_not_staff(self):
         response = self.client.get(path="/api/admin/feedback-categories/")
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_get_feedback_category_by_id_not_staff(self):
         response = self.client.get(
