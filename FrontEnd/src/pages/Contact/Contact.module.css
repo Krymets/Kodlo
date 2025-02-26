@@ -1,4 +1,5 @@
-.contact__button_send {
+.contact__button_send,
+.contact__button_send__disabled {
     min-width: 114px;
     padding: 10px 16px;
     border-radius: 4px;
@@ -19,4 +20,10 @@
 
 .contact__button_send:hover {
     background: var(--main-button-hover-color);
+}
+
+.contact__button_send__disabled {
+    background: var(--main-button-disabled-color);
+    color: var(--main-button-disabled-text-color);
+    cursor: default;
 }
