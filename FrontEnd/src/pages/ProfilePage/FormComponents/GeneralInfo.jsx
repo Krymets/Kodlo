@@ -80,6 +80,7 @@ const GeneralInfo = (props) => {
 
   const [profile, setProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [edrpouFieldError, setEdrpouFieldError] = useState(null);
   const [rnokppFieldError, setRnokppFieldError] = useState(null);
@@ -543,6 +544,7 @@ const GeneralInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const data = defineChanges(fields, profile, null);
       try {
         const response = await axios.patch(
@@ -554,11 +556,18 @@ const GeneralInfo = (props) => {
         setFormIsDirty(false);
       } catch (error) {
         handleError(error);
+      } finally {
+        setIsSaving(false);
       }
     }
   };
   return (
     <div className={css['form__container']}>
+      {isSaving && (
+      <div className={css['overlay']}>
+        <Loader />
+      </div>
+    )}
       <h3 className={css['form__head']}>Загальна інформація</h3>
       <div className={css['divider']}></div>
       {user && profile && mainProfile ? (
