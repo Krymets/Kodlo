@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { useContext } from 'react';
 import { DirtyFormContext } from '../../../context/DirtyFormContext';
 import { useAuth, useProfile } from '../../../hooks';
@@ -41,12 +41,24 @@ const UserInfo = (props) => {
   const [updateProfile, setUpdateProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
   const { setFormIsDirty } = useContext(DirtyFormContext);
+  const [isSaving, setIsSaving] = useState(false);
+  const [percent, setPercent] = useState(-50);
+  const timerRef = useRef();
 
   const fields = {
     surname: { defaultValue: user?.surname ?? '', context: 'user' },
     name: { defaultValue: user?.name ?? '', context: 'user' },
     person_position: { defaultValue: profile?.person_position ?? null },
   };
+  useEffect(() => {
+        timerRef.current = setTimeout(() => {
+            setPercent((v) => {
+                const nextPercent = v + 5;
+                return nextPercent > 150 ? -50 : nextPercent;
+            });
+        }, 100);
+        return () => clearTimeout(timerRef.current);
+    }, [percent]);
 
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, updateUser, updateProfile);
@@ -156,6 +168,7 @@ const UserInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const userData = defineChanges(fields, null, updateUser);
       const profileData = defineChanges(fields, updateProfile, null);
       axios
@@ -174,6 +187,7 @@ const UserInfo = (props) => {
             userMutate(updatedUserData.data);
             profileMutate(updatedProfileData.data);
             setFormIsDirty(false);
+            setIsSaving(false);
             toast.success('Зміни успішно збережено');
           })
         )
@@ -265,7 +279,7 @@ const UserInfo = (props) => {
             </div>
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving} percent={percent}/>
         </form>
       ) : (
         <Loader />

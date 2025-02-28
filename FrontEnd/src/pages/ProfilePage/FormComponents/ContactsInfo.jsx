@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useState, useEffect, useContext } from 'react';
+import {useState, useEffect, useContext, useRef} from 'react';
 import { DirtyFormContext } from '../../../context/DirtyFormContext';
 import { useAuth, useProfile } from '../../../hooks';
 import checkFormIsDirty from '../../../utils/checkFormIsDirty';
@@ -24,11 +24,24 @@ const ContactsInfo = (props) => {
   const [phone, setPhone] = useState(formatPhoneNumber(profile?.phone));
   const [phoneNumberError, setPhoneNumberError] = useState(null);
   const { setFormIsDirty } = useContext(DirtyFormContext);
+  const [isSaving, setIsSaving] = useState(false);
+  const [percent, setPercent] = useState(-50);
+  const timerRef = useRef();
 
   const fields = {
     phone: { defaultValue: mainProfile?.phone ?? null, type: 'phone' },
     address: { defaultValue: mainProfile?.address ?? null },
   };
+
+  useEffect(() => {
+        timerRef.current = setTimeout(() => {
+            setPercent((v) => {
+                const nextPercent = v + 5;
+                return nextPercent > 150 ? -50 : nextPercent;
+            });
+        }, 100);
+        return () => clearTimeout(timerRef.current);
+    }, [percent]);
 
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, null, profile);
@@ -88,6 +101,7 @@ const ContactsInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const data = defineChanges(fields, profile, null);
       try {
         const response = await axios.patch(
@@ -97,6 +111,7 @@ const ContactsInfo = (props) => {
         const updatedProfileData = response.data;
         profileMutate(updatedProfileData);
         setFormIsDirty(false);
+        setIsSaving(false);
         toast.success('Зміни успішно збережено');
       } catch (error) {
         console.error(
@@ -145,7 +160,7 @@ const ContactsInfo = (props) => {
             </div>
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving} percent={percent}/>
         </form>
       ) : (
         <Loader />

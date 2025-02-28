@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { useContext } from 'react';
 import { DirtyFormContext } from '../../../context/DirtyFormContext';
 import checkFormIsDirty from '../../../utils/checkFormIsDirty';
@@ -21,12 +21,24 @@ const AdditionalInfo = (props) => {
   const [profile, setProfile] = useState(props.profile);
   const [foundationYearError, setFoundationYearError] = useState(null);
   const { setFormIsDirty } = useContext(DirtyFormContext);
-
+  const [isSaving, setIsSaving] = useState(false);
+  const [percent, setPercent] = useState(-50);
+  const timerRef = useRef();
   // TODO: update default values as new fields added
 
   const fields = {
     founded: { defaultValue: mainProfile?.founded ?? null },
   };
+
+  useEffect(() => {
+        timerRef.current = setTimeout(() => {
+            setPercent((v) => {
+                const nextPercent = v + 5;
+                return nextPercent > 150 ? -50 : nextPercent;
+            });
+        }, 100);
+        return () => clearTimeout(timerRef.current);
+    }, [percent]);
 
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, null, profile);
@@ -65,6 +77,7 @@ const AdditionalInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const data  = defineChanges(fields, profile, null);
       try {
         const response = await axios.patch(
@@ -74,6 +87,7 @@ const AdditionalInfo = (props) => {
         const updatedProfileData = response.data;
         profileMutate(updatedProfileData);
         setFormIsDirty(false);
+        setIsSaving(false);
         toast.success('Зміни успішно збережено');
       } catch (error) {
         console.error(
@@ -113,7 +127,7 @@ const AdditionalInfo = (props) => {
             </div>
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving} percent={percent}/>
         </form>
       ) : (
         <Loader />
