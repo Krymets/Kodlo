@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import {useState, useEffect, useContext, useRef} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import { DirtyFormContext } from '../../../context/DirtyFormContext';
 import { useAuth, useProfile } from '../../../hooks';
 import checkFormIsDirty from '../../../utils/checkFormIsDirty';
@@ -25,23 +25,11 @@ const ContactsInfo = (props) => {
   const [phoneNumberError, setPhoneNumberError] = useState(null);
   const { setFormIsDirty } = useContext(DirtyFormContext);
   const [isSaving, setIsSaving] = useState(false);
-  const [percent, setPercent] = useState(-50);
-  const timerRef = useRef();
 
   const fields = {
     phone: { defaultValue: mainProfile?.phone ?? null, type: 'phone' },
     address: { defaultValue: mainProfile?.address ?? null },
   };
-
-  useEffect(() => {
-        timerRef.current = setTimeout(() => {
-            setPercent((v) => {
-                const nextPercent = v + 5;
-                return nextPercent > 150 ? -50 : nextPercent;
-            });
-        }, 100);
-        return () => clearTimeout(timerRef.current);
-    }, [percent]);
 
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, null, profile);
@@ -160,7 +148,7 @@ const ContactsInfo = (props) => {
             </div>
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton isSaving={isSaving} percent={percent}/>
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />

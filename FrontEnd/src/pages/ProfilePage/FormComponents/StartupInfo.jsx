@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect} from 'react';
 import { useContext } from 'react';
 import { DirtyFormContext } from '../../../context/DirtyFormContext';
 import checkFormIsDirty from '../../../utils/checkFormIsDirty';
@@ -23,20 +23,9 @@ const StartupInfo = (props) => {
   const [profile, setProfile] = useState(props.profile);
   const { setFormIsDirty } = useContext(DirtyFormContext);
   const [isSaving, setIsSaving] = useState(false);
-  const [percent, setPercent] = useState(-50);
-  const timerRef = useRef();
   const fields = {
     startup_idea: { defaultValue: mainProfile?.startup_idea ?? null },
   };
-  useEffect(() => {
-        timerRef.current = setTimeout(() => {
-            setPercent((v) => {
-                const nextPercent = v + 5;
-                return nextPercent > 150 ? -50 : nextPercent;
-            });
-        }, 100);
-        return () => clearTimeout(timerRef.current);
-    }, [percent]);
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, null, profile);
     setFormIsDirty(isDirty);
@@ -96,7 +85,7 @@ const StartupInfo = (props) => {
             />
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton isSaving={isSaving} percent={percent}/>
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />

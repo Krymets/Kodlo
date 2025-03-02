@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import { DirtyFormContext } from '../../../../context/DirtyFormContext';
 
 import css from './ProfileFormButton.module.css';
@@ -6,7 +6,18 @@ import {Spin} from 'antd';
 
 
 
-const ProfileFormButton = ({isSaving, percent}) => {
+const ProfileFormButton = ({isSaving}) => {
+    const [percent, setPercent] = useState(-50);
+    const timerRef = useRef();
+    useEffect(() => {
+        timerRef.current = setTimeout(() => {
+            setPercent((v) => {
+                const nextPercent = v + 5;
+                return nextPercent > 150 ? -50 : nextPercent;
+            });
+        }, 100);
+        return () => clearTimeout(timerRef.current);
+    }, [percent]);
   const { formIsDirty } = useContext(DirtyFormContext);
   return (
     <div className={css['submit-button__container']}>

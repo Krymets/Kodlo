@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { PropTypes } from 'prop-types';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect} from 'react';
 import { useContext } from 'react';
 import { toast } from 'react-toastify';
 import { Tooltip } from 'antd';
@@ -81,8 +81,6 @@ const GeneralInfo = (props) => {
   const [profile, setProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
   const [isSaving, setIsSaving] = useState(false);
-  const [percent, setPercent] = useState(-50);
-  const timerRef = useRef();
 
   const [edrpouFieldError, setEdrpouFieldError] = useState(null);
   const [rnokppFieldError, setRnokppFieldError] = useState(null);
@@ -136,15 +134,6 @@ const GeneralInfo = (props) => {
     is_registered: { defaultValue: mainProfile?.is_registered ?? null },
     is_startup: { defaultValue: mainProfile?.is_startup ?? null },
   };
-  useEffect(() => {
-        timerRef.current = setTimeout(() => {
-            setPercent((v) => {
-                const nextPercent = v + 5;
-                return nextPercent > 150 ? -50 : nextPercent;
-            });
-        }, 100);
-        return () => clearTimeout(timerRef.current);
-    }, [percent]);
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, null, profile);
     setFormIsDirty(isDirty);
@@ -779,7 +768,7 @@ const GeneralInfo = (props) => {
             />
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton isSaving={isSaving} percent={percent}/>
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />
