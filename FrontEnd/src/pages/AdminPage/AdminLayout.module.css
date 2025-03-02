@@ -2,7 +2,7 @@
     display: flex;
     background: var(--background__admin-panel);
     min-height: calc(100vh - 75px);
-    justify-content: safe center;
+    justify-content: flex-start;
     overflow-x: auto;
     padding: 0;
 }

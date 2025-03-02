@@ -2,7 +2,7 @@
   width: 345px;
   height: 365px;
   display: block;
-  border-radius: 11px;
+  border-radius: 6px;
   position: relative;
   margin: auto;
   background: var(--company-card-color);
@@ -46,8 +46,8 @@
 .company-card__image {
   width: 345px;
   height: 188px;
-  border-top-left-radius: 11px;
-  border-top-right-radius: 11px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
   flex-shrink: 0;
   object-fit: cover;
 }
