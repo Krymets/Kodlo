@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { PropTypes } from 'prop-types';
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { toast } from 'react-toastify';
 import { Tooltip } from 'antd';

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import {useState, useEffect, useContext} from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { DirtyFormContext } from '../../../context/DirtyFormContext';
 import { useAuth, useProfile } from '../../../hooks';
 import checkFormIsDirty from '../../../utils/checkFormIsDirty';
