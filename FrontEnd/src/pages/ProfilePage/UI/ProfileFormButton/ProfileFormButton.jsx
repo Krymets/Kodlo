@@ -1,6 +1,6 @@
-import {useContext, useEffect, useRef, useState} from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { DirtyFormContext } from '../../../../context/DirtyFormContext';
-import {Spin} from 'antd';
+import { Spin } from 'antd';
 
 import css from './ProfileFormButton.module.css';
 
