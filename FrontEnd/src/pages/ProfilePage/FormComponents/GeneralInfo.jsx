@@ -80,6 +80,7 @@ const GeneralInfo = (props) => {
 
   const [profile, setProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [edrpouFieldError, setEdrpouFieldError] = useState(null);
   const [rnokppFieldError, setRnokppFieldError] = useState(null);
@@ -133,7 +134,6 @@ const GeneralInfo = (props) => {
     is_registered: { defaultValue: mainProfile?.is_registered ?? null },
     is_startup: { defaultValue: mainProfile?.is_startup ?? null },
   };
-
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, null, profile);
     setFormIsDirty(isDirty);
@@ -543,6 +543,7 @@ const GeneralInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const data = defineChanges(fields, profile, null);
       try {
         const response = await axios.patch(
@@ -554,6 +555,8 @@ const GeneralInfo = (props) => {
         setFormIsDirty(false);
       } catch (error) {
         handleError(error);
+      } finally {
+        setIsSaving(false);
       }
     }
   };
@@ -765,7 +768,7 @@ const GeneralInfo = (props) => {
             />
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />

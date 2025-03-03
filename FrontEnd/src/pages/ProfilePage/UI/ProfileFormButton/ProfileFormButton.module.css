@@ -1,4 +1,4 @@
-.submit-button__conteiner {
+.submit-button__container {
     display: flex;
     align-items: flex-start;
     padding: 11px 17px;
@@ -6,6 +6,7 @@
 }
 
 .submit-button {
+    min-width: 114px;
     border-radius: 4px;
     background: var(--main-button-color);
     color: var(--main-button-text-color);

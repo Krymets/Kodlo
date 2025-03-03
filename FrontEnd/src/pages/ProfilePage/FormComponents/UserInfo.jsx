@@ -41,13 +41,13 @@ const UserInfo = (props) => {
   const [updateProfile, setUpdateProfile] = useState(props.profile);
   const [formStateErr, setFormStateErr] = useState(ERRORS);
   const { setFormIsDirty } = useContext(DirtyFormContext);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fields = {
     surname: { defaultValue: user?.surname ?? '', context: 'user' },
     name: { defaultValue: user?.name ?? '', context: 'user' },
     person_position: { defaultValue: profile?.person_position ?? null },
   };
-
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, updateUser, updateProfile);
     setFormIsDirty(isDirty);
@@ -156,6 +156,7 @@ const UserInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const userData = defineChanges(fields, null, updateUser);
       const profileData = defineChanges(fields, updateProfile, null);
       axios
@@ -174,6 +175,7 @@ const UserInfo = (props) => {
             userMutate(updatedUserData.data);
             profileMutate(updatedProfileData.data);
             setFormIsDirty(false);
+            setIsSaving(false);
             toast.success('Зміни успішно збережено');
           })
         )
@@ -265,7 +267,7 @@ const UserInfo = (props) => {
             </div>
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />

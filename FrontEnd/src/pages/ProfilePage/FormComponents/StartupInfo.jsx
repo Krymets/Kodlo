@@ -22,11 +22,10 @@ const StartupInfo = (props) => {
   const { profile: mainProfile, mutate: profileMutate } = useProfile();
   const [profile, setProfile] = useState(props.profile);
   const { setFormIsDirty } = useContext(DirtyFormContext);
-
+  const [isSaving, setIsSaving] = useState(false);
   const fields = {
     startup_idea: { defaultValue: mainProfile?.startup_idea ?? null },
   };
-
   useEffect(() => {
     const isDirty = checkFormIsDirty(fields, null, profile);
     setFormIsDirty(isDirty);
@@ -42,6 +41,7 @@ const StartupInfo = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      setIsSaving(true);
       const data = defineChanges(fields, profile, null);
       const response = await axios.patch(
         `${process.env.REACT_APP_BASE_API_URL}/api/profiles/${user.profile_id}`,
@@ -50,6 +50,7 @@ const StartupInfo = (props) => {
       const updatedProfileData = response.data;
       profileMutate(updatedProfileData);
       setFormIsDirty(false);
+      setIsSaving(false);
       toast.success('Зміни успішно збережено');
     } catch (error) {
       console.error(
@@ -84,7 +85,7 @@ const StartupInfo = (props) => {
             />
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />

@@ -24,6 +24,7 @@ const ContactsInfo = (props) => {
   const [phone, setPhone] = useState(formatPhoneNumber(profile?.phone));
   const [phoneNumberError, setPhoneNumberError] = useState(null);
   const { setFormIsDirty } = useContext(DirtyFormContext);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fields = {
     phone: { defaultValue: mainProfile?.phone ?? null, type: 'phone' },
@@ -88,6 +89,7 @@ const ContactsInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const data = defineChanges(fields, profile, null);
       try {
         const response = await axios.patch(
@@ -97,6 +99,7 @@ const ContactsInfo = (props) => {
         const updatedProfileData = response.data;
         profileMutate(updatedProfileData);
         setFormIsDirty(false);
+        setIsSaving(false);
         toast.success('Зміни успішно збережено');
       } catch (error) {
         console.error(
@@ -145,7 +148,7 @@ const ContactsInfo = (props) => {
             </div>
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />

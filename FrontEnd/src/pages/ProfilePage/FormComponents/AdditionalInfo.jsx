@@ -21,6 +21,7 @@ const AdditionalInfo = (props) => {
   const [profile, setProfile] = useState(props.profile);
   const [foundationYearError, setFoundationYearError] = useState(null);
   const { setFormIsDirty } = useContext(DirtyFormContext);
+  const [isSaving, setIsSaving] = useState(false);
 
   // TODO: update default values as new fields added
 
@@ -65,6 +66,7 @@ const AdditionalInfo = (props) => {
         'Зміни не можуть бути збережені, перевірте правильність заповнення полів'
       );
     } else {
+      setIsSaving(true);
       const data  = defineChanges(fields, profile, null);
       try {
         const response = await axios.patch(
@@ -74,6 +76,7 @@ const AdditionalInfo = (props) => {
         const updatedProfileData = response.data;
         profileMutate(updatedProfileData);
         setFormIsDirty(false);
+        setIsSaving(false);
         toast.success('Зміни успішно збережено');
       } catch (error) {
         console.error(
@@ -113,7 +116,7 @@ const AdditionalInfo = (props) => {
             </div>
           </div>
           <div className={css['bottom-divider']}></div>
-          <ProfileFormButton />
+          <ProfileFormButton isSaving={isSaving}/>
         </form>
       ) : (
         <Loader />
