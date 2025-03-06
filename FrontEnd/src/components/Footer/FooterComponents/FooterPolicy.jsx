@@ -40,6 +40,9 @@ function FooterPolicy() {
                     Copyright 2023 Forum. All rights reserved.
                 </p>
             </div>
+            <div className={css['policy-content__logo']}>
+                    <img src={`${process.env.REACT_APP_PUBLIC_URL}/svg/opentech_logo.svg`} />
+                </div>
         </div>
     );
 }

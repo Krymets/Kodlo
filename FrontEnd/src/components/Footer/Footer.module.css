@@ -12,14 +12,14 @@
     justify-content: space-between;
     padding: 32px 0px;
     width: 327px;
-    height: 679px;
+    height: 767px;
     gap: 32px;
 }
 
 @media only screen and (min-width: 768px) {
     .footer-content {
         width: 720px;
-        height: 535px;
+        height: 589px;
     }
 }
 
