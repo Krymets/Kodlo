@@ -71,7 +71,6 @@
     .policy-content {
         flex-direction: row;
         flex-wrap: wrap-reverse;
-        justify-content: none;
     }
 
     .policy-content__copyright {
