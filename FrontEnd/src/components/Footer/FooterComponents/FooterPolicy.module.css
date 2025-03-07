@@ -28,6 +28,10 @@
     padding-top: 24px;
 }
 
+.policy-content__logo {
+    padding-top: 24px;
+}
+
 .policy-content-links__text,
 .policy-content__copyright {
     color: var(--footer-links-font-color);
@@ -64,6 +68,15 @@
 }
 
 @media only screen and (min-width: 1200px) {
+    .policy-content {
+        flex-direction: row;
+        flex-wrap: wrap-reverse;
+    }
+
+    .policy-content__copyright {
+        margin-bottom: -3px;
+    }
+
     .policy-divider {
         background: none;
     }
